@@ -1,4 +1,10 @@
 import { SelectionModel } from '@angular/cdk/collections';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+  CdkDragHandle,
+} from '@angular/cdk/drag-drop';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -43,8 +49,9 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class TableBasicExample implements OnInit {
   displayedColumns: string[] = [
-    'select',
-    'position',
+    // 'select',
+    'dragPosition',
+    // 'position',
     'name',
     'symbol',
     'weight',
@@ -54,7 +61,11 @@ export class TableBasicExample implements OnInit {
     { value: 'steak-0', viewValue: 'Active' },
     { value: 'pizza-1', viewValue: 'Inactive' },
   ];
-  dataSource = new MatTableDataSource<any>();
+  // dataSource = new MatTableDataSource<any>();
+  dataSource: any;
+  // dataSource = ELEMENT_DATA;
+
+  @ViewChild('table') table: MatTable<PeriodicElement>;
   selection = new SelectionModel<PeriodicElement>(true, []);
 
   isLoading = true;
@@ -88,12 +99,12 @@ export class TableBasicExample implements OnInit {
     this.dataSource = new MatTableDataSource(
       (this.VOForm.get('VORows') as FormArray).controls
     );
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.paginator = this.paginator;
 
-    const filterPredicate = this.dataSource.filterPredicate;
-    this.dataSource.filterPredicate = (data: AbstractControl, filter) => {
-      return filterPredicate.call(this.dataSource, data.value, filter);
-    };
+    // const filterPredicate = this.dataSource.filterPredicate;
+    // this.dataSource.filterPredicate = (data: AbstractControl, filter) => {
+    //   return filterPredicate.call(this.dataSource, data.value, filter);
+    // };
 
     //Custom filter according to name column
     // this.dataSource.filterPredicate = (data: {name: string}, filterValue: string) =>
@@ -111,7 +122,7 @@ export class TableBasicExample implements OnInit {
     });
   }
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.paginator = this.paginator;
     this.paginatorList = document.getElementsByClassName(
       'mat-paginator-range-label'
     );
@@ -123,24 +134,29 @@ export class TableBasicExample implements OnInit {
       this.onPaginateChange(this.paginator, this.paginatorList);
     });
   }
-
+  dropTable(event: CdkDragDrop<PeriodicElement[]>) {
+    const prevIndex = this.dataSource.findIndex((d) => d === event.item.data);
+    moveItemInArray(this.dataSource, prevIndex, event.currentIndex);
+    this.table.renderRows();
+  }
   applyFilter(event: Event) {
     //  debugger;
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    // this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numRows = this.dataSource.length;
+    // const numRows = this.dataSource.data.length;
     return numSelected === numRows;
   }
 
   masterToggle() {
     this.isAllSelected()
       ? this.selection.clear()
-      : this.dataSource.data.forEach((row) => this.selection.select(row));
+      : this.dataSource.forEach((row) => this.selection.select(row));
   }
 
   // @ViewChild('table') table: MatTable<PeriodicElement>;
@@ -201,7 +217,7 @@ export class TableBasicExample implements OnInit {
 
   initiateVOForm(): FormGroup {
     return this.fb.group({
-      position: new FormControl(234),
+      position: new FormControl(1),
       name: new FormControl(''),
       weight: new FormControl(''),
       symbol: new FormControl(''),

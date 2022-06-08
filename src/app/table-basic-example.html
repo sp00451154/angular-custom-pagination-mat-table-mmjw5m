@@ -1,7 +1,27 @@
 <div class="mat-elevation-z8">
-  <button>
-    <mat-icon (click)="AddNewRow()" class="add-button">add_box</mat-icon>
-  </button>
+  <div class="row">
+    <div style="float: left; color: #0096d6; padding: 10px; font-weight: 700">
+      List of resource links for the selected user Type and Locale Combination
+    </div>
+    <div style="float: right; color: #0096d6; padding: 10px; font-weight: 700">
+      <button
+        style="background-color: #0096d6"
+        mat-raised-button
+        color="primary"
+        (click)="AddNewRow()"
+      >
+        Add new Link
+      </button>
+      <!-- <button
+        style="background-color: #f44336; margin-left: 10px"
+        mat-raised-button
+        color="warn"
+      >
+        Delete Multiple Links
+      </button> -->
+    </div>
+  </div>
+
   <br />
   <!-- <mat-form-field style="width: 40%">
     <mat-label>Filter</mat-label>
@@ -23,27 +43,51 @@
     />
   </mat-form-field> -->
   <form [formGroup]="VOForm" autocomplete="off">
-
-
     <ng-container formArrayName="VORows">
-      <table #table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+      <table
+        #table
+        mat-table
+        [dataSource]="dataSource"
+        class="mat-elevation-z8"
+        cdkDropList
+        [cdkDropListData]="dataSource"
+        (cdkDropListDropped)="dropTable($event)"
+      >
+        <!-- Position Column -->
+        <ng-container matColumnDef="dragPosition">
+          <th mat-header-cell *matHeaderCellDef>Position</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon cdkDragHandle>reorder</mat-icon>
+          </td>
+        </ng-container>
+
         <!-- Checkbox Column -->
         <ng-container matColumnDef="select">
           <th mat-header-cell *matHeaderCellDef>
-            <mat-checkbox (change)="$event ? masterToggle() : null" [checked]="selection.hasValue() && isAllSelected()"
-              [indeterminate]="selection.hasValue() && !isAllSelected()">
+            <mat-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+            >
             </mat-checkbox>
           </th>
           <td mat-cell *matCellDef="let row">
-            <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
-              [checked]="selection.isSelected(row)">
+            <mat-checkbox
+              (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(row) : null"
+              [checked]="selection.isSelected(row)"
+            >
             </mat-checkbox>
           </td>
         </ng-container>
         <!-- Position Column -->
         <ng-container matColumnDef="position">
           <th mat-header-cell *matHeaderCellDef>No.</th>
-          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            [formGroup]="element"
+          >
             <mat-form-field style="width: 70px" appearance="none">
               <input
                 matInput
@@ -58,10 +102,16 @@
         <!-- Name Column -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Dispaly Name</th>
-          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            [formGroup]="element"
+          >
             <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
-            <mat-form-field style="width: 100px"
-              [appearance]="VOForm.get('VORows').value[i].isEditable? 'none' : 'legacy'">
+            <mat-form-field
+              style="width: 100px"
+              [appearance]="VOForm.get('VORows').value[i].isEditable? 'none' : 'legacy'"
+            >
               <input
                 matInput
                 type="text"
@@ -76,10 +126,16 @@
         <!-- Symbol Column -->
         <ng-container matColumnDef="symbol">
           <th mat-header-cell *matHeaderCellDef>Link</th>
-          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            [formGroup]="element"
+          >
             <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
-            <mat-form-field style="width: 150px"
-              [appearance]="VOForm.get('VORows').value[i].isEditable? 'none' : 'legacy'">
+            <mat-form-field
+              style="width: 150px"
+              [appearance]="VOForm.get('VORows').value[i].isEditable? 'none' : 'legacy'"
+            >
               <input
                 matInput
                 type="text"
@@ -94,7 +150,11 @@
         <!-- Weight Column -->
         <ng-container matColumnDef="weight">
           <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            [formGroup]="element"
+          >
             <!-- [appearance]="true ? 'outline': 'fill'" -->
             <!-- <span [hidden]="VOForm.get('VORows').value[i].isEditable"> -->
             <!-- <mat-form-field
@@ -122,7 +182,11 @@
 
         <ng-container matColumnDef="action">
           <th mat-header-cell *matHeaderCellDef>Action</th>
-          <td mat-cell *matCellDef="let element; let i = index" [formGroup]="element">
+          <td
+            mat-cell
+            *matCellDef="let element; let i = index"
+            [formGroup]="element"
+          >
             <button
               mat-icon-button
               class="material-icons app-toolbar-menu save-button"
@@ -180,7 +244,10 @@
       </table>
     </ng-container>
   </form>
-  <mat-card *ngIf="isLoading" style="display: flex; justify-content: center; align-items: center">
+  <mat-card
+    *ngIf="isLoading"
+    style="display: flex; justify-content: center; align-items: center"
+  >
     <mat-progress-spinner color="primary" mode="indeterminate">
     </mat-progress-spinner>
   </mat-card>
