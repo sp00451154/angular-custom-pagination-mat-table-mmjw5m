@@ -1,3 +1,4 @@
+import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   AbstractControl,
@@ -42,6 +43,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class TableBasicExample implements OnInit {
   displayedColumns: string[] = [
+    'select',
     'position',
     'name',
     'symbol',
@@ -53,6 +55,7 @@ export class TableBasicExample implements OnInit {
     { value: 'pizza-1', viewValue: 'Inactive' },
   ];
   dataSource = new MatTableDataSource<any>();
+  selection = new SelectionModel<PeriodicElement>(true, []);
 
   isLoading = true;
 
@@ -125,6 +128,19 @@ export class TableBasicExample implements OnInit {
     //  debugger;
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  /** Whether the number of selected elements matches the total number of rows. */
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.dataSource.data.forEach((row) => this.selection.select(row));
   }
 
   // @ViewChild('table') table: MatTable<PeriodicElement>;
