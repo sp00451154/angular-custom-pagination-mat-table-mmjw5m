@@ -18,8 +18,18 @@ export interface PeriodicElement {
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'HP Software and Driver', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
+  {
+    position: 1,
+    name: 'HP Support',
+    weight: 1.0079,
+    symbol: 'https://support.hp.com',
+  },
+  {
+    position: 2,
+    name: 'HP Forum',
+    weight: 4.0026,
+    symbol: 'https://forum.hp.com',
+  },
 ];
 
 /**
@@ -35,7 +45,13 @@ export class TableBasicExample implements OnInit {
     'position',
     'name',
     'symbol',
+    'weight',
     'action',
+  ];
+  foods = [
+    { value: 'steak-0', viewValue: 'Active' },
+    { value: 'pizza-1', viewValue: 'Inactive' },
+    { value: 'tacos-2', viewValue: 'Tacos' },
   ];
   dataSource = new MatTableDataSource<any>();
 
