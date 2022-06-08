@@ -51,7 +51,6 @@ export class TableBasicExample implements OnInit {
   foods = [
     { value: 'steak-0', viewValue: 'Active' },
     { value: 'pizza-1', viewValue: 'Inactive' },
-    { value: 'tacos-2', viewValue: 'Tacos' },
   ];
   dataSource = new MatTableDataSource<any>();
 
